@@ -17,7 +17,7 @@ class BinarySearchResult
             throw new BinarySearchResultException('Low cannot be higher than high');
         }
 
-        if (!is_null($found) && !$isFinished) {
+        if ($this->isFound() && !$this->isFinished()) {
             throw new BinarySearchResultException('Search cannot be unfinished if result found');
         }
     }
