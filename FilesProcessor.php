@@ -39,7 +39,7 @@ class FilesProcessor {
             if (!$result->isFound()) {
                 $outputFile->fwrite(PHP_EOL . $string);
 
-                if (self::FLUSH_LINES_COUNT >= $checkFile->key()) {
+                if ($checkFile->key() % self::FLUSH_LINES_COUNT == 0) {
                     $outputFile->fflush();
                 }
             }
