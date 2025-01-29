@@ -14,7 +14,8 @@ class FilesProcessor {
         string $checkFileName,
         string $blackListFileName,
         string $outputFileName,
-    ) {
+    ): void
+    {
         $checkFile = new SplFileObject($checkFileName);
         $blackListFile = new SplFileObject($blackListFileName);
         $outputFile = new SplFileObject($outputFileName, 'a');
