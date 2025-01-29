@@ -2,17 +2,30 @@
 
 namespace randomsymbols\ascfiles;
 
-class binarySearchResult
+class BinarySearchResult
 {
+    /**
+     * @throws BinarySearchResultException
+     */
     public function __construct(
-        private int $low = 0,
-        private int $high = 0,
+        private int $low,
+        private int $high,
         private ?int $found = null,
-    ) {}
+        private bool $isFinished = false,
+    ) {
+        if ($low > $high) {
+            throw new BinarySearchResultException();
+        }
+    }
 
     public function isFound(): bool
     {
         return !is_null($this->found);
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->isFinished;
     }
 
     public function getFound(): ?int

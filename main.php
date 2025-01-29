@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 include_once 'FilesProcessor.php';
-include_once 'binarySearchResult.php';
+include_once 'BinarySearchResult.php';
 
 use randomsymbols\ascfiles\FilesProcessor;
 

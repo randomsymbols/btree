@@ -5,6 +5,11 @@ namespace randomsymbols\ascfiles;
 use SplFileObject;
 
 class FilesProcessor {
+    private const FLUSH_LINES_COUNT = 200;
+
+    /**
+     * @throws BinarySearchResultException
+     */
     public function filesDiff(
         string $checkFileName,
         string $blackListFileName,
@@ -19,32 +24,73 @@ class FilesProcessor {
 
         while (!$checkFile->eof()) {
             $string = trim($checkFile->fgets());
+            $low = 0;
+            $high = $blackListFileLinesCount;
 
-            $result = $this->binarySearch($string, $blackListFile, low: 0, high: $blackListFileLinesCount);
+            do {
+                $result = $this->binarySearch($string, $blackListFile, low: $low, high: $high);
+                $low = $result->getLow();
+                $high = $result->getHigh();
+            } while (
+                !$result->isFinished() &&
+                !$result->isFound()
+            );
 
             if (!$result->isFound()) {
                 $outputFile->fwrite(PHP_EOL . $string);
-                $outputFile->fflush();
+
+                if (self::FLUSH_LINES_COUNT >= $checkFile->key()) {
+                    $outputFile->fflush();
+                }
             }
         }
     }
 
+    /**
+     * @throws BinarySearchResultException
+     */
     private function binarySearch(
         string $string,
         SplFileObject $file,
         int $low,
         int $high,
-    ): binarySearchResult
+    ): BinarySearchResult
     {
         $middle = (int) ceil(($low + $high)/2);
         $file->seek($middle);
         $value = trim($file->current());
 
+        $decrement = $middle == $low ? 0 : 1;
+        $increment = $middle == $high ? 0 : 1;
+
         return match (true) {
-            $value === $string => new BinarySearchResult(found: $file->key()),
-            $high == $low => new binarySearchResult(found: null),
-            $string < $value => $this->binarySearch($string, $file, low: $low, high: $middle - 1),
-            $string > $value => $this->binarySearch($string, $file, low: $middle + 1, high: $high),
+            $value == $string => new BinarySearchResult(
+                low: $low,
+                high: $high,
+                found: $file->key(),
+                isFinished: true,
+            ),
+
+            $low == $high => new BinarySearchResult(
+                low: $low,
+                high: $high,
+                found: null,
+                isFinished: true,
+            ),
+
+            $string < $value => new BinarySearchResult(
+                low: $low,
+                high: $middle - $decrement,
+                found: null,
+                isFinished: false,
+            ),
+
+            $string > $value => new BinarySearchResult(
+                low: $middle + $increment,
+                high: $high,
+                found: null,
+                isFinished: false,
+            ),
         };
     }
 }
