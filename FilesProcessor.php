@@ -14,12 +14,13 @@ class FilesProcessor {
         $blackListFile = new SplFileObject($blackListFileName);
         $outputFile = new SplFileObject($outputFileName, 'a');
 
+        $blackListFile->seek(PHP_INT_MAX);
+        $blackListFileLinesCount = $blackListFile->key();
+
         while (!$checkFile->eof()) {
             $string = trim($checkFile->fgets());
-            $blackListFile->seek(PHP_INT_MAX);
-            $linesCount = $blackListFile->key();
 
-            $result = $this->binarySearch($string, $blackListFile, low: 0, high: $linesCount);
+            $result = $this->binarySearch($string, $blackListFile, low: 0, high: $blackListFileLinesCount);
 
             if (!$result->isFound()) {
                 $outputFile->fwrite(PHP_EOL . $string);
