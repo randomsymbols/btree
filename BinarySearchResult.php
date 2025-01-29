@@ -14,11 +14,11 @@ class BinarySearchResult
         private bool $isFinished = false,
     ) {
         if ($low > $high) {
-            throw new BinarySearchResultException();
+            throw new BinarySearchResultException('Low cannot be higher than high');
         }
 
         if (!is_null($found) && !$isFinished) {
-            throw new BinarySearchResultException();
+            throw new BinarySearchResultException('Search cannot be unfinished if result found');
         }
     }
 
