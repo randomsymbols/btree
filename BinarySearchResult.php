@@ -16,6 +16,10 @@ class BinarySearchResult
         if ($low > $high) {
             throw new BinarySearchResultException();
         }
+
+        if (!is_null($found) && !$isFinished) {
+            throw new BinarySearchResultException();
+        }
     }
 
     public function isFound(): bool
