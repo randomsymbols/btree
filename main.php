@@ -1,18 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
-$file1 = file_get_contents('file1.txt');
-$file2 = file_get_contents('file2.txt');
+include_once 'FilesProcessor.php';
+include_once 'binarySearchResult.php';
 
-$array1 = explode(PHP_EOL, $file1);
-$array2 = explode(PHP_EOL, $file2);
+use randomsymbols\ascfiles\FilesProcessor;
 
-$array12 = array_intersect($array1, $array2);
-$array3 = array_diff($array1, $array12);
-$array4 = array_diff($array2, $array12);
-
-$file3 = implode(PHP_EOL, $array3);
-$file4 = implode(PHP_EOL, $array4);
-
-file_put_contents('file3.txt', $file3);
-file_put_contents('file4.txt', $file4);
-
+$filesProcessor = new FilesProcessor();
+$filesProcessor->filesDiff('file1.txt', 'file2.txt', 'file3.txt');
+$filesProcessor->filesDiff('file2.txt', 'file1.txt', 'file4.txt');
